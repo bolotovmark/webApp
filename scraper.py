@@ -11,8 +11,25 @@ def get_bs():
     response = requests.get(url)
     soup = BeautifulSoup(response.text, 'lxml')
     table = soup.find('table', id="forecastTable")
-    td = table.find_all('tr')[5]
-    b = td.find_all('b')
+    td = table.find_all('tr')
+
+    temper = td[5]
+    b = temper.find_all('b')
     for i in range(0, 8):
         if i % 2 == 0:
-            print(re.findall(r'(?<!\d)-?\d*[.,]?\d+', str(b[i]))) #t+
+            print(re.findall(r'(?<!\d)-?\d*[.,]?\d+', str(b[i])))  # t + - 0
+
+    wind = td[8]
+    for i in range(1, 5):
+        wind_temp = wind.find_all('td')[i]
+        dive = wind_temp.find_all('div')[0]
+        print(dive.string)
+
+    precipitation = td[3]
+    for i in range(1, 5):
+        prec_temp = precipitation.find_all('td')[i]
+        dive = prec_temp.find_all('div')[0]
+        onmouseover = BeautifulSoup(str(dive), 'html.parser')
+        text = str(onmouseover.div['onmouseover'])
+        print(text)
+        print(re.match(r"(?<=')[\w\s]+", text))
