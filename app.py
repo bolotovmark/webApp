@@ -1,4 +1,5 @@
 from flask import Flask, render_template
+from gismeteo import get_gis
 
 app = Flask(__name__)
 
@@ -9,4 +10,5 @@ def hello_world():  # put application's code here
 
 
 if __name__ == '__main__':
+    get_gis()
     app.run()
