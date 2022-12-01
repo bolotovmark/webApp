@@ -3,7 +3,7 @@ from flask import Flask, render_template
 from parse.archive_parse import get_archive
 from parse.gismeteo import get_gis
 from parse.yandex_api import parse_weather
-from parse.scraper import get_bs
+from parse.rp5 import get_bs
 
 app = Flask(__name__)
 
