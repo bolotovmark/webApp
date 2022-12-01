@@ -8,4 +8,6 @@
 ## Участники проекта
 Группа ИВТ-21-2Б:
 -  [``Болотов Марк``](https://github.com/bolotovmark)
--  [``Eкатерина Тютюных``](https://github.com/Ekaterina-Tyutyunykh)
+-  [``Тютюных Eкатерина``](https://github.com/Ekaterina-Tyutyunykh)
+## Набросок разметки
+![Без имени](https://user-images.githubusercontent.com/92545761/200823121-026a4ca2-3a3a-4b4b-b99d-f8831838398a.jpg)
