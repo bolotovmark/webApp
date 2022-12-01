@@ -17,7 +17,8 @@ def get_bs():
     b = temper.find_all('b')
     for i in range(0, 8):
         if i % 2 == 0:
-            print(re.findall(r'(?<!\d)-?\d*[.,]?\d+', str(b[i])))  # t + - 0
+            m = re.search(r'(?<!\d)-?\d*[.,]?\d+', str(b[i]))
+            print(m.group(0))  # t + - 0
 
     wind = td[8]
     for i in range(1, 5):

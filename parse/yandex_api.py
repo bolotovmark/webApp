@@ -8,7 +8,6 @@ def parse_weather():
     # ветер м/c 'wind_speed'
     url = 'https://api.weather.yandex.ru/v2/forecast?lat=58.010000&lon=56.229143&lang=ru_RU&limit=2&hours=true&extra=true'
     response = requests.get(url, headers={'X-Yandex-API-Key': '25953e0d-5412-41e2-885a-0db6e929f689'}).json()
-    print(response)
     count = 1
     for part in response['forecasts']:
         if count == 1:
