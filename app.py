@@ -1,4 +1,5 @@
 from flask import Flask, render_template
+from gismeteo import get_gis
 
 from yandex_api import parse_weather
 from scraper import get_bs
@@ -12,6 +13,7 @@ def hello_world():  # put application's code here
 
 
 if __name__ == '__main__':
+    get_gis()
     parse_weather()
     get_bs()
 
