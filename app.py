@@ -1,5 +1,5 @@
 from flask import Flask, render_template
-
+from scraper import get_bs
 app = Flask(__name__)
 
 
@@ -9,4 +9,5 @@ def hello_world():  # put application's code here
 
 
 if __name__ == '__main__':
+    get_bs()
     app.run()
