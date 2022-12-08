@@ -30,14 +30,16 @@ class Archive(db.Model):
     character = db.Column(db.String(200))
     temp_a = db.Column(db.Integer)
     temp_b = db.Column(db.Integer)
-    wind_speed = db.Column(db.Integer)
+    wind_speed_a = db.Column(db.Integer)
+    wind_speed_b = db.Column(db.Integer)
 
-    def __init__(self, date, character, temp_a, temp_b, wind_speed):
+    def __init__(self, date, character, temp_a, temp_b, wind_speed_a, wind_speed_b):
         self.date = date
         self.character = character
         self.temp_a = temp_a
         self.temp_b = temp_b
-        self.wind_speed = wind_speed
+        self.wind_speed_a = wind_speed_a
+        self.wind_speed_b = wind_speed_b
 
     def __repr__(self):
         return '<Character %r>' % self.character
@@ -49,14 +51,16 @@ class Rp5(db.Model):
     character = db.Column(db.String(200))
     temp_a = db.Column(db.Integer)
     temp_b = db.Column(db.Integer)
-    wind_speed = db.Column(db.Integer)
+    wind_speed_a = db.Column(db.Integer)
+    wind_speed_b = db.Column(db.Integer)
 
-    def __init__(self, date, character, temp_a, temp_b, wind_speed):
+    def __init__(self, date, character, temp_a, temp_b, wind_speed_a, wind_speed_b):
         self.date = date
         self.character = character
         self.temp_a = temp_a
         self.temp_b = temp_b
-        self.wind_speed = wind_speed
+        self.wind_speed_a = wind_speed_a
+        self.wind_speed_b = wind_speed_b
 
     def __repr__(self):
         return '<Character %r>' % self.character
@@ -68,14 +72,16 @@ class Gismeteo(db.Model):
     character = db.Column(db.String(200))
     temp_a = db.Column(db.Integer)
     temp_b = db.Column(db.Integer)
-    wind_speed = db.Column(db.Integer)
+    wind_speed_a = db.Column(db.Integer)
+    wind_speed_b = db.Column(db.Integer)
 
-    def __init__(self, date, character, temp_a, temp_b, wind_speed):
+    def __init__(self, date, character, temp_a, temp_b, wind_speed_a, wind_speed_b):
         self.date = date
         self.character = character
         self.temp_a = temp_a
         self.temp_b = temp_b
-        self.wind_speed = wind_speed
+        self.wind_speed_a = wind_speed_a
+        self.wind_speed_b = wind_speed_b
 
     def __repr__(self):
         return '<Character %r>' % self.character
@@ -87,14 +93,16 @@ class Yandex(db.Model):
     character = db.Column(db.String(200))
     temp_a = db.Column(db.Integer)
     temp_b = db.Column(db.Integer)
-    wind_speed = db.Column(db.Integer)
+    wind_speed_a = db.Column(db.Integer)
+    wind_speed_b = db.Column(db.Integer)
 
-    def __init__(self, date, character, temp_a, temp_b, wind_speed):
+    def __init__(self, date, character, temp_a, temp_b, wind_speed_a, wind_speed_b):
         self.date = date
         self.character = character
         self.temp_a = temp_a
         self.temp_b = temp_b
-        self.wind_speed = wind_speed
+        self.wind_speed_a = wind_speed_a
+        self.wind_speed_b = wind_speed_b
 
     def __repr__(self):
         return '<Character %r>' % self.character
@@ -105,17 +113,17 @@ def hello_world():  # put application's code here
     return render_template('index.html')
 
 
-@scheduler.task('cron', id='do_job_1', minute=14, hour=2)
+@scheduler.task('cron', id='do_job_1', minute=9, hour=3)
 def scheduled_task():
     with app.app_context():
         get_parse()
         rp5()
+        gismeteo()
 
 
 def get_parse():
     time = datetime.now() - timedelta(days=1)
 
-    print(time)
     url = 'http://www.pogodaiklimat.ru/weather.php?id=28224&bday=' + str(time.day) \
           + '&fday=' + str(time.day) + '&amonth=' + str(time.month) + \
           '&ayear=' + str(time.year) + '&bot=2'
@@ -135,14 +143,11 @@ def get_parse():
     for i, j in zip([-7, -5, -3, -1], [5, 11, 17, 23]):
         print(i, j)
         td = tr[i].find_all('td')
-        print(td[1].text)
-        print(td[3].text)
-        print(td[5].text)
-        print('--------------')
 
         time = time.replace(hour=j)
         event = Archive(date=time, character=td[3].text,
-                        temp_a=td[5].text, temp_b=td[5].text, wind_speed=td[1].text)
+                        temp_a=td[5].text, temp_b=td[5].text,
+                        wind_speed_a=td[1].text, wind_speed_b=td[1].text)
         db.session.add(event)
         db.session.commit()
 
@@ -191,10 +196,69 @@ def rp5():
         m2 = re.search(r"(?<=')[\w\s]+", text)
         character_out = m2.group(0) + " " + m1.group(0)
 
-        time = datetime.now()
+        time = datetime.now() + timedelta(days=1)
         time = time.replace(hour=k)
         event = Rp5(date=time, character=character_out,
-                    temp_a=temp_a_out, temp_b=temp_b_out, wind_speed=wind_out)
+                    temp_a=temp_a_out, temp_b=temp_b_out,
+                    wind_speed_a=wind_out, wind_speed_b=wind_out)
+        db.session.add(event)
+        db.session.commit()
+
+
+def gismeteo():
+    # onmouseover="tooltip(this, 'Cлабый снег (0.1 см снега за 1 час с 12:00 до 13:00)'
+    # <b>-1</b>
+    # style="">4<
+    url = 'https://www.gismeteo.ru/weather-perm-4476/tomorrow'
+    headers = requests.utils.default_headers()
+
+    headers.update(
+        {
+            'User-Agent': 'My User Agent 1.0',
+        }
+    )
+
+    response = requests.get(url, headers=headers)
+    soup = BeautifulSoup(response.text, 'lxml')
+
+    weather = soup.find_all("div", class_="widget-row widget-row-icon")[0]
+    weather_out = []
+    for i, j in zip(range(0, 8), weather):
+        if i % 2 == 1:
+            row_w = j.find('div')
+            data = BeautifulSoup(str(row_w), 'html.parser')
+            text = str(data.div['data-text'])
+            weather_out.append(text)
+
+    t = soup.find_all("div", class_="widget-row-chart widget-row-chart-temperature")[0]
+    temp = t.find_all("span", class_="unit unit_temperature_c")
+    temp_out = []
+    for i, j in zip(range(0, 8), temp):
+        if i % 2 == 1:
+            temp_out.append(j.contents[0])
+
+    s = soup.find_all("div", class_="widget-row widget-row-wind-speed-gust row-with-caption")[0]
+    speed_a_out = []
+    speed_b_out = []
+    for i, j in zip(range(0, 10), s):
+        if i % 2 == 0 and i != 0:
+            speed = j.find_all("span")
+            output = str(speed[0].contents[0])
+            if len(output) > 2:
+                m = re.findall(r'(?<!\d)-?\d*[.,]?\d+', output)
+                speed_a_out.append(m[0])
+                speed_b_out.append(m[1])
+            else:
+                speed_a_out.append(output)
+                speed_b_out.append(output)
+
+    for i, j, k, h, r in zip(weather_out, temp_out, speed_a_out, speed_b_out, [5, 11, 17, 23]):
+        time = datetime.now() + timedelta(days=1)
+        time = time.replace(hour=r)
+
+        event = Gismeteo(date=time, character=i,
+                         temp_a=j, temp_b=j,
+                         wind_speed_a=k, wind_speed_b=h)
         db.session.add(event)
         db.session.commit()
 
