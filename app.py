@@ -1,15 +1,11 @@
 import os
+import re
+import requests
+from datetime import timedelta, datetime
+from bs4 import BeautifulSoup
 from flask import Flask, render_template
 from flask_apscheduler import APScheduler
 from flask_sqlalchemy import SQLAlchemy
-import requests
-from bs4 import BeautifulSoup
-from datetime import timedelta, datetime
-
-#from parse.archive_parse import get_archive
-from parse.gismeteo import get_gis
-from parse.yandex_api import parse_weather
-from parse.rp5 import get_bs
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'c8bd55466f90a32a8e90b3e4d6c030cc'
@@ -26,6 +22,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = \
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
+
 
 class Archive(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -108,11 +105,11 @@ def hello_world():  # put application's code here
     return render_template('index.html')
 
 
-@scheduler.task('cron', id='do_job_1', minute=4, hour=19)
+@scheduler.task('cron', id='do_job_1', minute=14, hour=2)
 def scheduled_task():
     with app.app_context():
         get_parse()
-
+        rp5()
 
 
 def get_parse():
@@ -135,8 +132,7 @@ def get_parse():
     soup = BeautifulSoup(response.text, 'lxml')
     table = soup.find('div', class_="archive-table-wrap")
     tr = table.findAll('tr')
-    for i, j in zip([-8, -6, -4, -2], [5, 11, 18, 23]):
-        # print(tr[i], "\n--------------\n")
+    for i, j in zip([-7, -5, -3, -1], [5, 11, 17, 23]):
         print(i, j)
         td = tr[i].find_all('td')
         print(td[1].text)
@@ -147,6 +143,58 @@ def get_parse():
         time = time.replace(hour=j)
         event = Archive(date=time, character=td[3].text,
                         temp_a=td[5].text, temp_b=td[5].text, wind_speed=td[1].text)
+        db.session.add(event)
+        db.session.commit()
+
+
+def rp5():
+    # onmouseover="tooltip(this, 'Cлабый снег (0.1 см снега за 1 час с 12:00 до 13:00)'
+    # <b>-1</b>
+    # style="">4<
+    url = 'https://rp5.ru/%D0%9F%D0%BE%D0%B3%D0%BE%D0%B4%D0%B0_%D0%B2_%D0%9F%D0%B5%D1%80%D0%BC%D0%B8'
+    response = requests.get(url)
+    soup = BeautifulSoup(response.text, 'lxml')
+    table = soup.find('table', id="forecastTable")
+    td = table.find_all('tr')
+
+    for i, j, k in zip([5, 6, 7, 8], [8, 10, 12, 14], [5, 11, 17, 23]):
+        temper = td[5]
+
+        b = temper.find_all('b')
+        m = re.search(r'(?<!\d)-?\d*[.,]?\d+', str(b[j]))
+        temp_a_out = m.group(0)
+        temp_b_out = m.group(0)  # t + - 0
+
+        wind = td[8]
+        wind_temp = wind.find_all('td')[i]
+        try:
+            dive = wind_temp.find_all('div')[0]
+        except Exception:
+            dive = wind_temp
+        wind_out = dive.contents[0]
+
+        precipitation = td[2]
+        cloudy = td[3]
+
+        prec_temp = precipitation.find_all('td')[i]
+        dive = prec_temp.find_all('div')[1]
+        onmouseover = BeautifulSoup(str(dive), 'html.parser')
+        text = onmouseover.div['onmouseover']
+        m1 = re.search(r"(?<=>)[\w\s]+", text)
+
+        cloudy_temp = cloudy.find_all('td')[i]
+        dive = cloudy_temp.find_all('div')[0]
+        onmouseover = BeautifulSoup(str(dive), 'html.parser')
+
+        dive_onmouseover = onmouseover.find_all('div')[0]
+        text = str(dive_onmouseover['onmouseover'])
+        m2 = re.search(r"(?<=')[\w\s]+", text)
+        character_out = m2.group(0) + " " + m1.group(0)
+
+        time = datetime.now()
+        time = time.replace(hour=k)
+        event = Rp5(date=time, character=character_out,
+                    temp_a=temp_a_out, temp_b=temp_b_out, wind_speed=wind_out)
         db.session.add(event)
         db.session.commit()
 
