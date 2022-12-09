@@ -13,38 +13,42 @@ def get_bs():
     table = soup.find('table', id="forecastTable")
     td = table.find_all('tr')
 
-    temper = td[4]
-    b = temper.find_all('b')
-    for i in range(0, 8):
-        if i % 2 == 0:
-            m = re.search(r'(?<!\d)-?\d*[.,]?\d+', str(b[i]))
-            print(m.group(0))  # t + - 0
 
-    wind = td[7]
-    for i in range(1, 5):
+    temper = td[5]
+    print(temper)
+    b = temper.find_all('b')
+    for i in [8, 10, 12, 14]:
+        m = re.search(r'(?<!\d)-?\d*[.,]?\d+', str(b[i]))
+        print(m.group(0))  # t + - 0
+
+
+    wind = td[8]
+    for i in range(5, 9):
         wind_temp = wind.find_all('td')[i]
         try:
             dive = wind_temp.find_all('div')[0]
         except Exception:
             dive = wind_temp
-        print(dive.string)
+        print(dive.contents[0])
 
-    precipitation = td[3]
-    cloudy = td[2]
-    for i in range(1, 5):
+    precipitation = td[2]
+    cloudy = td[3]
+    for i in range(5, 9):
         prec_temp = precipitation.find_all('td')[i]
-        dive = prec_temp.find_all('div')[0]
+        dive = prec_temp.find_all('div')[1]
         onmouseover = BeautifulSoup(str(dive), 'html.parser')
-        text = str(onmouseover.div['onmouseover'])
-        m1 = re.search(r"(?<=')[\w\s]+", text)
+        text = onmouseover.div['onmouseover']
+        m1 = re.search(r"(?<=>)[\w\s]+", text)
 
         cloudy_temp = cloudy.find_all('td')[i]
         dive = cloudy_temp.find_all('div')[0]
         onmouseover = BeautifulSoup(str(dive), 'html.parser')
-        dive_onmouseover = onmouseover.find_all('div')[1]
+
+        dive_onmouseover = onmouseover.find_all('div')[0]
         text = str(dive_onmouseover['onmouseover'])
-        m2 = re.search(r"(?<=>)[\w\s]+", text)
-        print(m2.group(0), m1.group(0))
+        m2 = re.search(r"(?<=')[\w\s]+", text)
+        out = m2.group(0) + " " + m1.group(0)
+        print(out)
 
 
 
