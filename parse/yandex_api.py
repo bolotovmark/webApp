@@ -6,9 +6,10 @@ def parse_weather():
     # характер погоды : осадки и облачки 'condition' 'cloudness'
     # температура + - 0 'temp_avg'
     # ветер м/c 'wind_speed'
-    url = 'https://api.weather.yandex.ru/v2/forecast?lat=58.010000&lon=56.229143&lang=ru_RU&limit=2&hours=true&extra=true'
-    response = requests.get(url, headers={'X-Yandex-API-Key': '25953e0d-5412-41e2-885a-0db6e929f689'}).json()
+    url = 'https://api.weather.yandex.ru/v2/forecast?lat=58.010454&lon=56.229441&lang=ru_RU&limit=2&hours=true&extra=true'
+    response = requests.get(url, headers={'X-Yandex-API-Key': 'adae34d0-0276-4494-987d-4051576fcd3c'}).json()
     count = 1
+    print(response)
     for part in response['forecasts']:
         if count == 1:
             count = 2
@@ -33,11 +34,11 @@ def parse_weather():
             evening_temp = part['parts']['evening']['temp_avg']
             evening_wind = part['parts']['evening']['wind_speed']
 
-            mas_weather = [[morning_condition, morning_cloudness, morning_temp, morning_wind],[day_condition, day_cloudness, day_temp, day_wind],[evening_condition, evening_cloudness, evening_temp, evening_wind],[night_condition, night_cloudness, night_temp, night_wind]]
+            mas_weather = [[morning_condition, morning_cloudness, morning_temp, morning_wind], [day_condition, day_cloudness, day_temp, day_wind],[evening_condition, evening_cloudness, evening_temp, evening_wind],[night_condition, night_cloudness, night_temp, night_wind]]
             for row in mas_weather:
                 for elem in row:
                     print(elem, end=' ')
                 print()
 
-
+parse_weather()
 
