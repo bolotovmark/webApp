@@ -11,3 +11,6 @@
 -  [``Тютюных Eкатерина``](https://github.com/Ekaterina-Tyutyunykh)
 ## Набросок разметки
 ![Без имени](https://user-images.githubusercontent.com/92545761/200823121-026a4ca2-3a3a-4b4b-b99d-f8831838398a.jpg)
+
+![image](https://user-images.githubusercontent.com/92545761/206870233-421f14e5-2fbd-4ff1-9f45-3a952d0e3172.png)
+
