@@ -120,10 +120,13 @@ def hello_world():
     table_yandex_tomor = Yandex.query.limit(-4).all()
     table_rp5_last = Rp5.query.limit(-4).all()
     table_rp5_tomor = Rp5.query.limit(-4).all()
-    return render_template('index.html', table=table, table_day=table_day, table_gismeteo_last=table_gismeteo_last, table_yandex_last=table_yandex_last, table_rp5_last=table_rp5_last)
+    return render_template('index.html', table=table, table_day=table_day,
+                           table_gismeteo_last=table_gismeteo_last,
+                           table_yandex_last=table_yandex_last,
+                           table_rp5_last=table_rp5_last)
 
 
-@scheduler.task('cron', id='do_job_1', minute=10, hour=23)
+@scheduler.task('cron', id='do_job_1', minute=46, hour=19)
 def scheduled_task():
     with app.app_context():
         get_parse()

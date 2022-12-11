@@ -5,11 +5,13 @@
     padding: 0;
     box-sizing: border-box;
     font-family: 'Roboto', sans-serif;
+
 }
 TABLE {
     width: 900px;
     border-collapse: collapse;
     justify-content: right;
+    box-shadow: 0 2px 15px rgba(64,64,64,.7);
 
 }
 
@@ -20,7 +22,11 @@ TD, TH {
 }
 
 TH {
-    background: #b0e0e6;
+   background-color: #1f284d;
+ color: #fafafa;
+}
+TR{
+     background-color: #fafafa;
 }
 .navbar{
     width: 100%;
@@ -66,7 +72,7 @@ TH {
     position: relative;
     width: 1000px;
     height: 600px;
-    background: aqua;
+    /*background: aqua;*/
     display: flex;
 
 }
@@ -83,24 +89,26 @@ TH {
     position: relative;
     width: 800px;
     height: 200px;
-    background: aqua;
+    /*background: aqua;*/
     display: flex;
-    justify-content: center;
+    justify-content: left;
 }
 .container_box_2 .box3{
     position: relative;
     width: 800px;
     height: 200px;
-    background: brown;
+   /* background: brown;*/
     display: flex;
-    justify-content: center;
+    justify-content: left;
 }
 .container_box_2 .box4{
     position: relative;
     width: 800px;
     height: 200px;
-    background: crimson;
+   /* background: crimson;*/
     display: flex;
-    justify-content: center;
+    justify-content: left;
 }
+
+
 
