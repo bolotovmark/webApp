@@ -120,13 +120,10 @@ def hello_world():
     table_yandex_tomor = Yandex.query.limit(-4).all()
     table_rp5_last = Rp5.query.limit(-4).all()
     table_rp5_tomor = Rp5.query.limit(-4).all()
-    return render_template('index.html', table=table, table_day=table_day,
-                           table_gismeteo_last=table_gismeteo_last,
-                           table_yandex_last=table_yandex_last,
-                           table_rp5_last=table_rp5_last)
+    return render_template('index.html', table=table, table_day=table_day, table_gismeteo_last=table_gismeteo_last, table_yandex_last=table_yandex_last, table_rp5_last=table_rp5_last)
 
 
-@scheduler.task('cron', id='do_job_1', minute=46, hour=19)
+@scheduler.task('cron', id='do_job_1', minute=4, hour=22)
 def scheduled_task():
     with app.app_context():
         get_parse()
@@ -243,7 +240,9 @@ def gismeteo():
             text = str(data.div['data-text'])
             weather_out.append(text)
 
+    print(soup)
     t = soup.find_all("div", class_="widget-row-chart widget-row-chart-temperature")[0]
+
     temp = t.find_all("span", class_="unit unit_temperature_c")
     temp_out = []
     for i, j in zip(range(0, 8), temp):
