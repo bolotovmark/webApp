@@ -126,6 +126,18 @@ def hello_world():
                            table_rp5_last=table_rp5_last)
 
 
+@app.route('/gismeteo')
+def template_gismeteo():
+    return render_template('gismeteo.html')
+
+@app.route('/yandex')
+def template_yandex():
+    return render_template('yandex.html')
+
+@app.route('/rp5')
+def template_rp5():
+    return render_template('rp5.html')
+
 @scheduler.task('cron', id='do_job_1', minute=46, hour=19)
 def scheduled_task():
     with app.app_context():

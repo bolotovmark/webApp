@@ -11,8 +11,8 @@
         <div class="container">
             <a class="navbar-brand">Проверка погоды</a>
             <ul class="navbar-menu">
-                <li><a href = '#'>О сайте</a></li>
-                <li><a href = '#'>Контакты</a></li>
+                <li><a href = 'https://github.com/bolotovmark/webApp#readme'>О сайте</a></li>
+                <li><a href = 'https://github.com/bolotovmark/webApp'>Контакты</a></li>
                 <li><a href = 'https://cataas.com/cat'>Картинка котика</a></li>
             </ul>
         </div>
@@ -24,7 +24,7 @@
         <div class="content">
         <br><br><br>
         {% for row in table_day %}
-            <h3>Погода на сайтах и в действительности на {{ row.date.day}}.{{ row.date.month }}</h3>
+            <h3 style="font-size: 30px">Погода на сайтах и в действительности на {{ row.date.day}}.{{ row.date.month }}</h3>
         {% endfor %}
         <br>
 <table class="last">
@@ -35,46 +35,47 @@
             <p><b>Гисметео</b></p>
         <br><br><br><br>
             <p><b>Яндекс</b></p>
-        <br><br><br><br>
-            <p><b>Rp5</b></p>
         <br><br><br><br><br>
+            <p><b>Rp5</b></p>
+        <br><br><br><br>
     </td>
     <td>
+
             <table>
                 <tr>
-                    <th>Время</th>
-                    <th>Характер</th>
-                    <th>Температура</th>
-                     <th>Ветер</th>
+                    <th><b>Время</b></th>
+                    <th><b>Характер</b></th>
+                    <th><b>Температура</b></th>
+                     <th><b>Ветер</b></th>
                 </tr>
             {% for row in table %}
-                <tr>
-                    <td>{{ row.date.hour }}:00</td>
-                    <td>{{ row.character}}</td>
+                <tr >
+                    <td style="text-align: left;">{{ row.date.hour }}:00</td>
+                    <td style="text-align: left;">{{ row.character}}</td>
                     <td>( {{ row.temp_a }}; {{ row.temp_b }} )</td>
                     <td>( {{ row.wind_speed_a }} - {{ row.wind_speed_b }} )</td>
                 </tr>
             {% endfor %}
         {% for row in table_gismeteo_last %}
                 <tr>
-                    <td>{{ row.date.hour }}:00</td>
-                    <td>{{ row.character }}</td>
+                    <td  style="text-align: right;">{{ row.date.hour }}:00</td>
+                    <td style="text-align: left;">{{ row.character }}</td>
                     <td>( {{ row.temp_a }}; {{ row.temp_b }} )</td>
                     <td>( {{ row.wind_speed_a }} - {{ row.wind_speed_b }} )</td>
                 </tr>
             {% endfor %}
         {% for row in table_yandex_last %}
-                <tr>
-                    <td>{{ row.date.hour }}:00</td>
-                    <td>{{ row.character }}</td>
+                <tr >
+                    <td style="text-align: left;">{{ row.date.hour }}:00</td>
+                    <td style="text-align: left;">{{ row.character }}</td>
                     <td>( {{ row.temp_a }}; {{ row.temp_b }} )</td>
                     <td>( {{ row.wind_speed_a }} - {{ row.wind_speed_b }} )</td>
                 </tr>
             {% endfor %}
             {% for row in table_rp5_last %}
                 <tr>
-                    <td>{{ row.date.hour }}:00</td>
-                    <td>{{ row.character }}</td>
+                    <td  style="text-align: right;">{{ row.date.hour }}:00</td>
+                    <td style="text-align: left;">{{ row.character }}</td>
                     <td>( {{ row.temp_a }}; {{ row.temp_b }} )</td>
                     <td>( {{ row.wind_speed_a }} - {{ row.wind_speed_b }} )</td>
                 </tr>
@@ -93,68 +94,62 @@
         <div class="container_box_2">
             <div class = "box2">
         <div class="content">
-            <h3>Гисметео</h3>
-
-             {% for row in table_day %}
-            <p>Погода на {{ row.date.day}}.{{ row.date.month }}</p>
+         {% for row in table_day %}
+            <p style="font-size: 30px">Погода на {{ row.date.day}}.{{ row.date.month }}</p>
         {% endfor %}
-        <br>
+            <br>
+            <h3  style="font-size: 25px">Гисметео</h3>
+
         <table style="width: 600px;">
             {% for row in table_gismeteo_last %}
                 <tr>
-                    <td>{{ row.date.hour }}:00</td>
-                    <td>{{ row.character }}</td>
-                    <td>( {{ row.temp_a }}; {{ row.temp_b }} )</td>
+                    <td style="width: 70px">{{ row.date.hour }}:00</td>
+                    <td  style="width: 350px">{{ row.character }}</td>
+                    <td  style="width: 90px">( {{ row.temp_a }}; {{ row.temp_b }} )</td>
                     <td>( {{ row.wind_speed_a }} - {{ row.wind_speed_b }} )</td>
                 </tr>
             {% endfor %}
         </table>
 
-        <a href = 'https://cataas.com/cat'style=" text-decoration: none;  color: #333;">Посмотреть архив</a>
+            <p><a href="{{ url_for('template_gismeteo') }}">Весь архив Gismeteo</a></p>
 
         </div>
     </div>
         <div class = "box3" style="--clr:#5b98eb">
         <div class="content">
-            <h3>Яндекс</h3>
-
-             {% for row in table_day %}
-            <p>Погода на {{ row.date.day}}.{{ row.date.month }}</p>
-        {% endfor %}
         <br>
+            <h3  style="font-size: 25px">Яндекс</h3>
+
+
         <table style="width: 600px;">
             {% for row in table_yandex_last %}
                 <tr>
-                    <td>{{ row.date.hour }}:00</td>
-                    <td>{{ row.character }}</td>
-                    <td>( {{ row.temp_a }}; {{ row.temp_b }} )</td>
+                    <td style="width: 70px">{{ row.date.hour }}:00</td>
+                    <td  style="width: 350px">{{ row.character }}</td>
+                    <td  style="width: 90px">( {{ row.temp_a }}; {{ row.temp_b }} )</td>
                     <td>( {{ row.wind_speed_a }} - {{ row.wind_speed_b }} )</td>
                 </tr>
             {% endfor %}
         </table>
-         <a href = 'https://cataas.com/cat' style=" text-decoration: none;  color: #333;">Посмотреть архив</a>
+         <a href = 'https://cataas.com/cat' style=" text-decoration: none;  color: #333;"><b>Посмотреть архив</b></a>
 
         </div>
     </div>
         <div class = "box4" style="--clr:#5b98eb">
         <div class="content">
-            <h3>Rp5</h3>
+            <h3  style="font-size: 25px">Rp5</h3>
 
-             {% for row in table_day %}
-            <p>Погода на {{ row.date.day}}.{{ row.date.month }}</p>
-        {% endfor %}
-        <br>
         <table style="width: 600px;">
             {% for row in table_rp5_last %}
                 <tr>
-                    <td>{{ row.date.hour }}:00</td>
-                    <td>{{ row.character }}</td>
-                    <td>( {{ row.temp_a }}; {{ row.temp_b }} )</td>
+                    <td style="width: 70px">{{ row.date.hour }}:00</td>
+                    <td style="width: 350px" >{{ row.character }}</td>
+                    <td style="width: 90px">( {{ row.temp_a }}; {{ row.temp_b }} )</td>
                     <td>( {{ row.wind_speed_a }} - {{ row.wind_speed_b }} )</td>
                 </tr>
             {% endfor %}
         </table>
-        <a href = 'https://cataas.com/cat' style=" text-decoration: none;  color: #333;">Посмотреть архив</a>
+        <a href = 'https://cataas.com/cat' style=" text-decoration: none;  color: #333;"><b>Посмотреть архив</b></a>
         </div>
     </div>
         </div>
