@@ -100,7 +100,7 @@
         {% endfor %}
         <br>
         <table style="width: 600px;">
-            {% for row in table_gismeteo_last %}
+            {% for row in table_gismeteo_tomorow %}
                 <tr>
                     <td>{{ row.date.hour }}:00</td>
                     <td>{{ row.character }}</td>
@@ -123,7 +123,7 @@
         {% endfor %}
         <br>
         <table style="width: 600px;">
-            {% for row in table_yandex_last %}
+            {% for row in table_yandex_tomorow %}
                 <tr>
                     <td>{{ row.date.hour }}:00</td>
                     <td>{{ row.character }}</td>
@@ -140,12 +140,11 @@
         <div class="content">
             <h3>Rp5</h3>
 
-             {% for row in table_day %}
-            <p>Погода на {{ row.date.day}}.{{ row.date.month }}</p>
-        {% endfor %}
+            <p>Погода на {{ table_gismeteo_tomorow[0].date.day}}.{{ table_gismeteo_tomorow[0].date.month}}</p>
+
         <br>
         <table style="width: 600px;">
-            {% for row in table_rp5_last %}
+            {% for row in table_rp5_tomorow %}
                 <tr>
                     <td>{{ row.date.hour }}:00</td>
                     <td>{{ row.character }}</td>
