@@ -1,11 +1,13 @@
 import os
 import re
+
 import requests
 from datetime import timedelta, datetime
 from bs4 import BeautifulSoup
 from flask import Flask, render_template
 from flask_apscheduler import APScheduler
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import func
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'c8bd55466f90a32a8e90b3e4d6c030cc'
@@ -109,21 +111,88 @@ class Yandex(db.Model):
 
 
 @app.route('/')
-def hello_world():  # put application's code here
-    return render_template('index.html')
+def hello_world():
+    date_x = datetime.now()
+    date_wheather_a = date_x
+    date_wheather_b = date_x
+    date_last_a = date_x
+    date_last_b = date_x
+    if date_x.hour == 23:
+        if date_x.minute >= 5:
+            date_wheather_a = date_wheather_a.replace(year=date_x.year, day=date_x.day + 1, hour=0, minute=0)
+            date_wheather_b = date_wheather_b.replace(year=date_x.year, day=date_x.day + 2, hour=0, minute=0)
+        else:
+            date_wheather_a = date_wheather_a.replace(year=date_x.year, day=date_x.day, hour=0, minute=0)
+            date_wheather_b = date_wheather_b.replace(year=date_x.year, day=date_x.day + 1, hour=0, minute=0)
+
+        if date_x.minute >= 45:
+            date_last_a = date_last_a.replace(year=date_x.year, day=date_x.day, hour=0, minute=0)
+            date_last_b = date_last_b.replace(year=date_x.year, day=date_x.day + 1, hour=0, minute=0)
+        else:
+            date_last_a = date_last_a.replace(year=date_x.year, day=date_x.day - 1, hour=0, minute=0)
+            date_last_b = date_last_b.replace(year=date_x.year, day=date_x.day, hour=0, minute=0)
+
+    else:
+        date_wheather_a = date_wheather_a.replace(year=date_x.year, day=date_x.day, hour=0, minute=0)
+        date_wheather_b = date_wheather_b.replace(year=date_x.year, day=date_x.day + 1, hour=0, minute=0)
+        date_last_a = date_last_a.replace(year=date_x.year, day=date_x.day - 1, hour=0, minute=0)
+        date_last_b = date_last_b.replace(year=date_x.year, day=date_x.day, hour=0, minute=0)
+
+    table = Archive.query.filter(Archive.date.between(date_last_a, date_last_b)).all()
+    table_day = Archive.query.limit(1)
+
+    table_gismeteo_last = Gismeteo.query.filter(Gismeteo.date.between(date_last_a, date_last_b)).all()
+    table_gismeteo_tomorow = Gismeteo.query.filter(Gismeteo.date.between(date_wheather_a, date_wheather_b)).all()
+
+    table_yandex_last = Yandex.query.filter(Yandex.date.between(date_last_a, date_last_b)).all()
+    table_yandex_tomorow = Yandex.query.filter(Yandex.date.between(date_wheather_a, date_wheather_b)).all()
+
+    table_rp5_last = Rp5.query.filter(Rp5.date.between(date_last_a, date_last_b)).all()
+    table_rp5_tomorow = Rp5.query.filter(Rp5.date.between(date_wheather_a, date_wheather_b)).all()
+    return render_template('index.html',
+                           table=table,
+
+                           table_gismeteo_last=table_gismeteo_last,
+                           table_gismeteo_tomorow=table_gismeteo_tomorow,
+
+                           table_yandex_last=table_yandex_last,
+                           table_yandex_tomorow=table_yandex_tomorow,
+
+                           table_rp5_last=table_rp5_last,
+                           table_rp5_tomorow=table_rp5_tomorow)
 
 
-@scheduler.task('cron', id='do_job_1', minute=10, hour=23)
-def scheduled_task():
+@app.route('/gismeteo')
+def template_gismeteo():
+    return render_template('gismeteo.html')
+
+
+@app.route('/yandex')
+def template_yandex():
+    return render_template('yandex.html')
+
+
+@app.route('/rp5')
+def template_rp5():
+    return render_template('rp5.html')
+
+
+@scheduler.task('cron', id='do_job_01', minute=5, hour=23)
+def scheduled_task_01():
     with app.app_context():
-        get_parse()
         rp5()
         gismeteo()
         yandex()
 
 
+@scheduler.task('cron', id='do_job_02', minute=48, hour=23)
+def scheduled_task_02():
+    with app.app_context():
+        get_parse()
+
+
 def get_parse():
-    time = datetime.now() - timedelta(days=1)
+    time = datetime.now()
 
     url = 'http://www.pogodaiklimat.ru/weather.php?id=28224&bday=' + str(time.day) \
           + '&fday=' + str(time.day) + '&amonth=' + str(time.month) + \
@@ -162,7 +231,7 @@ def rp5():
     table = soup.find('table', id="forecastTable")
     td = table.find_all('tr')
 
-    for i, j, k in zip([5, 6, 7, 8], [8, 10, 12, 14], [5, 11, 17, 23]):
+    for i, j, k in zip([1, 2, 3, 4], [0, 2, 4, 6], [5, 11, 17, 23]):
         temper = td[5]
 
         b = temper.find_all('b')
@@ -214,7 +283,7 @@ def gismeteo():
 
     headers.update(
         {
-            'User-Agent': 'My User Agent 1.0',
+            'User-Agent': 'My User Agent 2.0',
         }
     )
 
@@ -231,6 +300,7 @@ def gismeteo():
             weather_out.append(text)
 
     t = soup.find_all("div", class_="widget-row-chart widget-row-chart-temperature")[0]
+
     temp = t.find_all("span", class_="unit unit_temperature_c")
     temp_out = []
     for i, j in zip(range(0, 8), temp):
