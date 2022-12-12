@@ -9,11 +9,9 @@
 <body>
     <nav class="navbar">
         <div class="container">
-            <a class="navbar-brand">Проверка погоды</a>
+            <a class="navbar-brand">The Curator of weather</a>
             <ul class="navbar-menu">
-                <li><a href = '#'>О сайте</a></li>
-                <li><a href = '#'>Контакты</a></li>
-                <li><a href = 'https://cataas.com/cat'>Картинка котика</a></li>
+                <li><a href = 'https://github.com/bolotovmark/webApp'>Github</a></li>
             </ul>
         </div>
     </nav>
@@ -23,9 +21,7 @@
         <div class = "box1" style="--clr:#eb5ae5">
         <div class="content">
         <br><br><br>
-        {% for row in table_day %}
-            <h3>Погода на сайтах и в действительности на {{ row.date.day}}.{{ row.date.month }}</h3>
-        {% endfor %}
+        <h2>Cравнение предыдущего дня {{ table[0].date.day}}.{{ table[0].date.month}}</h2>
         <br>
 <table class="last">
     <tr>
@@ -100,7 +96,7 @@
         {% endfor %}
         <br>
         <table style="width: 600px;">
-            {% for row in table_gismeteo_last %}
+            {% for row in table_gismeteo_tomorow %}
                 <tr>
                     <td>{{ row.date.hour }}:00</td>
                     <td>{{ row.character }}</td>
@@ -123,7 +119,7 @@
         {% endfor %}
         <br>
         <table style="width: 600px;">
-            {% for row in table_yandex_last %}
+            {% for row in table_yandex_tomorow %}
                 <tr>
                     <td>{{ row.date.hour }}:00</td>
                     <td>{{ row.character }}</td>

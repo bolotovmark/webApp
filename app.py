@@ -123,14 +123,14 @@ def hello_world():
             date_wheather_b = date_wheather_b.replace(year=date_x.year, day=date_x.day + 2, hour=0, minute=0)
         else:
             date_wheather_a = date_wheather_a.replace(year=date_x.year, day=date_x.day, hour=0, minute=0)
-            date_wheather_b = date_wheather_a
+            date_wheather_b = date_wheather_b.replace(year=date_x.year, day=date_x.day + 1, hour=0, minute=0)
 
         if date_x.minute >= 45:
             date_last_a = date_last_a.replace(year=date_x.year, day=date_x.day, hour=0, minute=0)
-            date_last_b = date_last_a
+            date_last_b = date_last_b.replace(year=date_x.year, day=date_x.day + 1, hour=0, minute=0)
         else:
-            date_last_a = date_last_a.replace(year=date_x.year, day=date_x.day - 2, hour=0, minute=0)
-            date_last_b = date_last_b.replace(year=date_x.year, day=date_x.day - 1, hour=0, minute=0)
+            date_last_a = date_last_a.replace(year=date_x.year, day=date_x.day - 1, hour=0, minute=0)
+            date_last_b = date_last_b.replace(year=date_x.year, day=date_x.day, hour=0, minute=0)
 
     else:
         date_wheather_a = date_wheather_a.replace(year=date_x.year, day=date_x.day, hour=0, minute=0)
@@ -151,7 +151,6 @@ def hello_world():
     table_rp5_tomorow = Rp5.query.filter(Rp5.date.between(date_wheather_a, date_wheather_b)).all()
     return render_template('index.html',
                            table=table,
-                           table_day=table_day,
 
                            table_gismeteo_last=table_gismeteo_last,
                            table_gismeteo_tomorow=table_gismeteo_tomorow,
@@ -161,6 +160,21 @@ def hello_world():
 
                            table_rp5_last=table_rp5_last,
                            table_rp5_tomorow=table_rp5_tomorow)
+
+
+@app.route('/gismeteo')
+def template_gismeteo():
+    return render_template('gismeteo.html')
+
+
+@app.route('/yandex')
+def template_yandex():
+    return render_template('yandex.html')
+
+
+@app.route('/rp5')
+def template_rp5():
+    return render_template('rp5.html')
 
 
 @scheduler.task('cron', id='do_job_01', minute=5, hour=23)
