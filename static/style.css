@@ -7,38 +7,27 @@
     font-family: 'Roboto', sans-serif;
 
 }
-TABLE {
-    width: 900px;
-    border-collapse: collapse;
-    justify-content: right;
-    text-align: center;
-    box-shadow: 0 2px 15px rgba(64,64,64,.7);
-    border-spacing: 5px;
-    border-radius: 20px;
-
+table {
+  border: 1px solid #69c;
+}
+th {
+  font-weight: normal;
+  color: #039;
+  border-bottom: 1px dashed #69c;
+  padding: 12px 17px;
+}
+td {
+  color: #669;
+  padding: 7px 17px;
+}
+tr:hover td {
+  background: #ccddff;
 }
 
-TD, TH {
+.la {
+text-align: left; /* Выравнивание по левому краю */
 
-    padding: 3px;
-    border: 1px solid black;
 }
-
-TH {
-  /* background-color: #1f284d;*/
-    /*color: #fafafa;*/
-    padding: 12px 10px;
-    border-bottom: 2px solid #F56433;
-    color: #F56433;
-}
-
-TR{
-     background-color: #fff5e2;
-}
-tr:hover {
-    background-color:#F56433;
-    /*color: white;*/
-    }
 
 .navbar{
     width: 100%;
@@ -82,8 +71,8 @@ tr:hover {
 
 .container_box .box1{
     position: relative;
-    width: 1000px;
-    height: 600px;
+    width: 1100px;
+    height: 900px;
     /*background: aqua;*/
     display: flex;
 
@@ -93,6 +82,8 @@ tr:hover {
     position: relative;
     align-items: center;
     padding: 60px 10px;
+    width: 1100px;
+    height: 900px;
     gap: 30px;
     flex-wrap: wrap;
 }
