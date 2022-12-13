@@ -164,12 +164,7 @@ def hello_world():
 
 @app.route('/gismeteo')
 def template_gismeteo():
-    date_x = datetime.now()
-    date_a = date_x
-    date_a = date_a.replace(day=date_a.day - 7, hour=0, minute=0)
-    date_b = date_x
-    date_b = date_b.replace(day=date_b.day + 1, hour=0, minute=0)
-    table = Gismeteo.query.filter(Gismeteo.date.between(date_a, date_b)).all()
+    table = Gismeteo.query.all()
 
     return render_template('gismeteo.html', gismeteo_table=table)
 
