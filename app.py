@@ -164,17 +164,21 @@ def hello_world():
 
 @app.route('/gismeteo')
 def template_gismeteo():
-    return render_template('gismeteo.html')
+    table = Gismeteo.query.all()
+
+    return render_template('gismeteo.html', gismeteo_table=table)
 
 
 @app.route('/yandex')
 def template_yandex():
-    return render_template('yandex.html')
+    table = Yandex.query.all()
+    return render_template('yandex.html', yandex_table=table)
 
 
 @app.route('/rp5')
 def template_rp5():
-    return render_template('rp5.html')
+    table = Rp5.query.all()
+    return render_template('rp5.html', rp5_table=table)
 
 
 @scheduler.task('cron', id='do_job_01', minute=5, hour=23)
